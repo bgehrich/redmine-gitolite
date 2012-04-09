@@ -11,6 +11,7 @@ class GitolitePublicKey < ActiveRecord::Base
   named_scope :inactive, {:conditions => {:active => GitolitePublicKey::STATUS_LOCKED}}
   
   validate :has_not_been_changed
+  validate :validate_public_key
   
   before_validation :set_identifier
   
@@ -19,6 +20,13 @@ class GitolitePublicKey < ActiveRecord::Base
       %w(identifier key user_id).each do |attribute|
         errors.add(attribute, 'may not be changed') unless changes[attribute].blank?
       end
+    end
+  end
+
+  def validate_public_key
+    @fields = key.split(" ")
+    unless @fields.length == 3	
+      errors.add(:key, 'must be the entire key!')
     end
   end
   
