@@ -25,9 +25,9 @@ class GitolitePublicKey < ActiveRecord::Base
 
   def validate_public_key
     @fields = key.split(" ")
-    unless @fields.length == 3	
-      errors.add(:key, 'must be the entire key!')
-    end
+	unless @fields[0].eql? "ssh-rsa" or @fields[0].eql? "ssh-dss"
+	  errors.add(:key, 'field invalid. Key must begin with ssh-rsa or ssh-dss!')
+	end
   end
   
   def set_identifier
